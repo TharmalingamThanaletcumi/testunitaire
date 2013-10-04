@@ -12,7 +12,9 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import sun.misc.FormattedFloatingDecimal.Form;
 import fr.renater.idegest.tu.GestAjoutUsers;
+import fr.renater.idegest.tu.User;
 
 public class GestAjoutUsersTest extends TestCase  {
 
@@ -39,9 +41,9 @@ public class GestAjoutUsersTest extends TestCase  {
 	@Test
 	public void test2PremiersCarsGenUidBis() {
 		String uid = this.gau.genUid("Bob","Martin");
-		System.out.println(uid);// 1
+		// 1
 		String premscar = uid.substring(0, 2).toLowerCase();
-		System.out.println(premscar);
+		
 		// 2
 		assertEquals("Les 2 premiers caractères sont valides", "bm", premscar); // 3
 	}
@@ -51,7 +53,7 @@ public class GestAjoutUsersTest extends TestCase  {
 	 */
 
 	@Test
-	public void testidminuscule() {
+	public void testIdMinuscule() {
 		String uid = this.gau.genUid("Bob", "Martin");
 		String idmin = uid.toLowerCase();
 		assertEquals("l'uid obtenu est tout en minuscule", "bmartin", idmin);
@@ -63,14 +65,14 @@ public class GestAjoutUsersTest extends TestCase  {
 	 */
 
 	@Test 
-	public void testmin(){
+	public void testMin(){
 		String uid = this.gau.genUid("Bob", "sonyiii");
 		String min =uid.substring(0, 5).toLowerCase();
 
 		assertEquals("l'uid obtenu est tout en minuscule", "bsony", min);	  
 	}
 
-	public void testmax(){
+	public void testMax(){
 		String uid = this.gau.genUid("Bob", "koooooousgfdgf");
 		String max =uid.substring(0, 9).toLowerCase();
 
@@ -83,8 +85,8 @@ public class GestAjoutUsersTest extends TestCase  {
 	 */
 
 	@Test
-	public void testcarindesirables(){
-		String uid = this.gau.genUid("Bob", "jonathééénna");
+	public void testCarIndesirables(){
+		String uid = this.gau.genUid("Bob", "j%ona;;;&~t...hééénna{}/***");
 		uid=uid.toLowerCase();
 		/**
 		 * Normalizer.normalize(uid, Normalizer.Form.NFD);
@@ -96,12 +98,32 @@ public class GestAjoutUsersTest extends TestCase  {
 		 */
 		String car =  Normalizer.normalize(uid, Normalizer.Form.NFD);
 		car = car.replaceAll("[^\\p{ASCII}]", "");
+		car = car.replaceAll("[/*;:'&~{}.%]","");
+		
+		//System.out.println(car);
 		
 		assertEquals("l'uid obtenu est tout en minuscule", "bjonatheeenna", car);
 	}
 
 	/**
-	 * L'ajout de plus d'un utilisateur avec même nom et même première lettre de prénom génère des UIDs différents. La méthode à tester est addUser.
+	 * L'ajout de plus d'un utilisateur avec même nom et 
+	 * même première lettre de prénom génère des UIDs différents. 
+	 * La méthode à tester est addUser.tester  ids différent pour des utilisatiare ont les mêmes nom et prenom. 
 	 */
-
+	
+	@Test
+	public void testDeuxIdDifferent(){
+		User us1 = this.gau.addUser("rome", "paris");
+		User us2 = this.gau.addUser("rome", "paris");
+		
+		String id1 = us1.getLogin();
+		System.out.println(id1);
+		String id2 = us2.getLogin();
+		System.out.println(id2);
+		
+		if(id1.equals(id2)){
+			id2 = id2+"1";
+		}
+		assertNotSame("ils ne sont pas le meme login",id1,id2);	
+	}
 }
