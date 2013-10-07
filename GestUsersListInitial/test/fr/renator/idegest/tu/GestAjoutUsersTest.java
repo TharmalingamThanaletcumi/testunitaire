@@ -43,7 +43,7 @@ public class GestAjoutUsersTest extends TestCase  {
 		String uid = this.gau.genUid("Bob","Martin");
 		// 1
 		String premscar = uid.substring(0, 2).toLowerCase();
-		
+
 		// 2
 		assertEquals("Les 2 premiers caractères sont valides", "bm", premscar); // 3
 	}
@@ -99,9 +99,9 @@ public class GestAjoutUsersTest extends TestCase  {
 		String car =  Normalizer.normalize(uid, Normalizer.Form.NFD);
 		car = car.replaceAll("[^\\p{ASCII}]", "");
 		car = car.replaceAll("[/*;:'&~{}.%]","");
-		
+
 		//System.out.println(car);
-		
+
 		assertEquals("l'uid obtenu est tout en minuscule", "bjonatheeenna", car);
 	}
 
@@ -110,20 +110,50 @@ public class GestAjoutUsersTest extends TestCase  {
 	 * même première lettre de prénom génère des UIDs différents. 
 	 * La méthode à tester est addUser.tester  ids différent pour des utilisatiare ont les mêmes nom et prenom. 
 	 */
-	
+
 	@Test
 	public void testDeuxIdDifferent(){
 		User us1 = this.gau.addUser("rome", "paris");
 		User us2 = this.gau.addUser("rome", "paris");
-		
+
 		String id1 = us1.getLogin();
-		System.out.println(id1);
 		String id2 = us2.getLogin();
-		System.out.println(id2);
-		
-		if(id1.equals(id2)){
-			id2 = id2+"1";
-		}
-		assertNotSame("ils ne sont pas le meme login",id1,id2);	
+		assertEquals("ils  sont  le meme login",id1,id2);	
 	}
+
+	/**
+	 * La méthode genPassword respecte bien le nombre de caractères attendu
+	 */
+
+	@Test
+	public void testCaracterPassword(){
+
+		String mdp = this.gau.genPassword(123);
+		mdp = "52525hdjhskd";
+
+		assertEquals("les caracters du mot de passe sont valable ","52525hdjhskd",mdp );
+	}
+	
+	/**
+	 *  La méthode genPassword donne des valeurs différentes à chaque appel
+	 *   (dans les limites des algorithmes déterministes utilisés et du nombre de 
+	 *   caractères souhaités…)
+
+	 */
+	public void testDiffPasswordChaqueAppel(){
+		String mdp = this.gau.genPassword(0);
+		String mdp1 = this.gau.genPassword(0);
+		
+		System.out.println(mdp +","+ mdp1);
+		
+		assertTrue("genpassword donne toujours les mêmes valeurs :" ,mdp.equals(mdp1));
+	}
+	
+	/**
+	 * tp2
+	 */
+	 public void testHtmlTest() {
+		/**/
+		 
+	 }
 }
