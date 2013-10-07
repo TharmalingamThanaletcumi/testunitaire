@@ -154,6 +154,5 @@ public class GestAjoutUsersTest extends TestCase  {
 	 */
 	 public void testHtmlTest() {
 		/**/
-		 
 	 }
 }
